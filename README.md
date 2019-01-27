@@ -67,12 +67,12 @@ public class SamplesController : Controller
         _samplesRepository = samplesRepository;
     }
     
-     [HttpGet]
-     public async Task<IEnumerable<SampleDomain>> Get()
-     {
-         var samples = await _samplesRepository.GetAllAsync();
-         return samples.Result;
-     }
+    [HttpGet]
+    public async Task<IEnumerable<SampleDomain>> Get()
+    {
+        var samples = await _samplesRepository.GetAllAsync();
+        return samples.IsSuccess ? samples.Result : null;
+    }
 }
 
 ```
