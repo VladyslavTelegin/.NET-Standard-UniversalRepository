@@ -62,7 +62,7 @@ public class SamplesController : Controller
 {
     private readonly IUniversalDataService<SampleDomain> _samplesRepository;
 
-    public SamplesService(IUniversalDataService<SampleDomain> samplesRepository)
+    public SamplesController(IUniversalDataService<SampleDomain> samplesRepository)
     {
         _samplesRepository = samplesRepository;
     }
