@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UniversalRepository.Models;
-
-namespace UniversalRepository.Abstractions
+﻿namespace UniversalRepository.Abstractions
 {
+    using Microsoft.Extensions.Caching.Memory;
+    using UniversalRepository.Models;
+
     public abstract class RepositoryCachedBase : RepositoryBase
     {
         #region PrivateFields

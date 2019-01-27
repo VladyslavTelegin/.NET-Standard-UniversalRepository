@@ -25,7 +25,7 @@
         #region Constuctor
 
         public UniversalDataService(IMemoryCache memoryCache,
-                                    ConnectionConfig connectionConfig) 
+                                    ConnectionConfig connectionConfig)  
             : base(memoryCache,
                    connectionConfig, 
                    typeof(TDomain).FullName) { }
@@ -52,7 +52,7 @@
                     }
                     else
                     {
-                        var errorMessage = $"Cannot create row.)";
+                        var errorMessage = $"Cannot create row.";
                         throw new UniversalRepositoryException(errorMessage);
                     }
                 }
@@ -81,7 +81,7 @@
                     }
                     else
                     {
-                        var errorMessage = $"Cannot get row.)";
+                        var errorMessage = $"Cannot get row.";
                         throw new UniversalRepositoryException(errorMessage);
                     }
                 }
@@ -114,7 +114,7 @@
                         }
                         else
                         {
-                            var errorMessage = $"Cannot get all rows.)";
+                            var errorMessage = $"Cannot get all rows.";
                             throw new UniversalRepositoryException(errorMessage);
                         }
                     }
@@ -150,7 +150,7 @@
                     }
                     else
                     {
-                        var errorMessage = $"Cannot get update row.)";
+                        var errorMessage = $"Cannot get update row.";
                         throw new UniversalRepositoryException(errorMessage);
                     }
                 }
@@ -184,7 +184,7 @@
                         }
                         else
                         {
-                            var errorMessage = $"Cannot delete row.)";
+                            var errorMessage = $"Cannot delete row.";
                             throw new UniversalRepositoryException(errorMessage);
                         }
                     }
