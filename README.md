@@ -1,8 +1,8 @@
 # .NET-Standard-UniversalRepository
 
-## Usage explanation
+## Usage explanation:
 
-### Step 1. Define Dto and Domain models:
+### Step 1. Define Dto and Domain models.
 
 ``` C#
 ...
@@ -20,7 +20,7 @@ public class SampleDto : IUniversalDataTransferObject<SampleDomain>
 
 ```
 
-### Step 2. Add UniversalRepository to your project like Middleware extension:
+### Step 2. Add UniversalRepository to your project like Middleware extension.
 
 ``` C#
 
@@ -53,7 +53,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### Step 3. Resolve required repository and use it:
+### Step 3. Resolve required repository and use it.
 
 ``` C#
 ...
