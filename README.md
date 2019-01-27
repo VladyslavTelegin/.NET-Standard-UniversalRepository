@@ -2,7 +2,7 @@
 
 ## Usage explanation:
 
-### Step 1. Define Dto and Domain models.
+### Step 1. Define DTO and Domain models.
 
 ``` C#
 ...
