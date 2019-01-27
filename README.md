@@ -68,7 +68,7 @@ public class SamplesController : Controller
     }
     
      [HttpGet]
-     public async Task<IEnumerable<string>> Get()
+     public async Task<IEnumerable<SampleDomain>> Get()
      {
          var samples = await _samplesRepository.GetAllAsync();
          return samples.Result;
