@@ -36,7 +36,7 @@ public void ConfigureServices(IServiceCollection services)
         connectionConfig: new ConnectionConfig
         {
             DataSource = ".",
-            InitialCatalog = "BookingService",
+            InitialCatalog = "SampleService",
             User = "John Doe",
             Password = "JohnDoe2019#",
             IntegratedSecurity = true,
@@ -47,7 +47,7 @@ public void ConfigureServices(IServiceCollection services)
     // Or You can use simple ConnectionString:
     services.AddUniversalRepository(
         dataTransferObjectsContainerAssembly: Assembly.GetAssembly(typeof(SampleDto)),
-        connectionString: "Data Source=.;Initial Catalog=BookingService;Integrated Security=True;" + 
+        connectionString: "Data Source=.;Initial Catalog=SampleService;Integrated Security=True;" + 
                           "User=JohnDoe;Password=JohnDoe2019#;Persist Security Info=False;"
     );
 }
