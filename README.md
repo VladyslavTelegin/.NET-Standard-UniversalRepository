@@ -53,7 +53,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### Step 3. Inject required repository and use it:
+### Step 3. Resolve required repository and use it:
 
 ``` C#
 ...
