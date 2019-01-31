@@ -7,24 +7,20 @@
 
     public abstract class RepositoryBase
     {
-        #region PrivateFields
-
-        private readonly ConnectionConfig _connectionConfig;
-
-        #endregion
-
         #region Constructor
 
         protected RepositoryBase(ConnectionConfig connectionConfig)
         {
-            _connectionConfig = connectionConfig;
+            ConnectionConfig = connectionConfig;
         }
 
         #endregion
 
         #region Properties
 
-        protected IDbConnection Connection => new SqlConnection(_connectionConfig.ConnectionString);
+        public static ConnectionConfig ConnectionConfig;
+
+        protected IDbConnection Connection => new SqlConnection(ConnectionConfig.ConnectionString);
 
         #endregion
     }

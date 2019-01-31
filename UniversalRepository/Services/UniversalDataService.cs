@@ -36,6 +36,8 @@
 
         #region Default CRUD
 
+        #region Asynchronus
+
         public async Task<UniversalRepositoryResult> CreateAsync(TDomain modelToCreate)
         {
             try
@@ -106,7 +108,7 @@
                 {
                     using (IDbConnection dbContext = base.Connection)
                     {
-                        var allItems = await dbContext.GetAllAsync<TDto>();
+                        var allItems = await dbContext.GetAllAsync<TDto>().ConfigureAwait(false);
                         if (allItems != null)
                         {
                             var mappedDomainObjects = Mapper.Map<IEnumerable<TDomain>>(allItems);
@@ -206,7 +208,17 @@
 
         #endregion
 
+        #region Synchronus
+
+        public UniversalRepositoryResult<IEnumerable<TDomain>> GetAll() => this.GetAllAsync().Result;
+
+        #endregion
+
+        #endregion
+
         #region Customizable CRUD
+
+        #region Asynchronus
 
         public Task<UniversalRepositoryResult> CreateAsync(string customQuery)
         {
@@ -232,6 +244,18 @@
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Synchronus
+
+        #region Synchronus
+
+        public UniversalRepositoryResult<IEnumerable<TDomain>> GetAll(string customQuery) => this.GetAllAsync(customQuery).Result;
+
+        #endregion
+
+        #endregion
 
         #endregion
 
