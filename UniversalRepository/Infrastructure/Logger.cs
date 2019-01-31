@@ -8,7 +8,7 @@
     {
         #region Constants
 
-        private const string FileName = "universalRepository.log";
+        private const string FileName = "UniversalRepository.log";
 
         #endregion
 
