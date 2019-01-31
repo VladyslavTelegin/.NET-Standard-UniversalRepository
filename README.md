@@ -1,4 +1,4 @@
-# .NET Standard UniversalRepository for ASP.NET Core
+# .NET Standard UniversalRepository
 
 ## Usage explanation:
 
