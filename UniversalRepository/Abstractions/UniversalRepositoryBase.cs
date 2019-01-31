@@ -5,11 +5,11 @@
 
     using UniversalRepository.Models;
 
-    public abstract class RepositoryBase
+    public abstract class UniversalRepositoryBase
     {
         #region Constructor
 
-        protected RepositoryBase(ConnectionConfig connectionConfig)
+        protected UniversalRepositoryBase(ConnectionConfig connectionConfig)
         {
             ConnectionConfig = connectionConfig;
         }
@@ -18,7 +18,7 @@
 
         #region Properties
 
-        public static ConnectionConfig ConnectionConfig;
+        protected static ConnectionConfig ConnectionConfig;
 
         protected IDbConnection Connection => new SqlConnection(ConnectionConfig.ConnectionString);
 

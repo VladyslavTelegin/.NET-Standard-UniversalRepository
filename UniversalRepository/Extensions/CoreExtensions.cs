@@ -1,44 +1,34 @@
-﻿namespace UniversalRepository.Extensions
+﻿namespace UniversalRepository.CoreExtensions
 {
     using AutoMapper;
 
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Options;
 
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
+    using UniversalRepository.Abstractions;
     using UniversalRepository.Interfaces;
     using UniversalRepository.Models;
     using UniversalRepository.ServiceDefinitions;
     using UniversalRepository.Services;
 
-    public static class MiddlewareExtensions
+    public static class CoreExtensions
     {
-        #region PrivateFields
-
-        private static readonly IMemoryCache _memoryCache;
-
-        #endregion
-
-        #region Constructor
-
-        static MiddlewareExtensions()
-        {
-            _memoryCache = new MemoryCache(new MemoryCacheOptions());
-        }
-
-        #endregion
-
+  
         #region PublicMethods
 
         public static void AddUniversalRepository(this IServiceCollection serviceCollection,
                                                   Assembly dataTransferObjectsContainerAssembly,
                                                   ConnectionConfig connectionConfig, 
                                                   IEnumerable<Profile> mappingProfilesList = null,
-                                                  bool isTransientScoped = false)
+                                                  bool isTransientScoped = false,
+                                                  bool isCachingEnabled = false,
+                                                  IOptions<MemoryCacheOptions> memoryCacheOptions = null)
         {
             AddAutoMapper(mappingProfilesList);
 
@@ -52,15 +42,16 @@
                                                         .GetGenericArguments()[0];
 
                 var universalRepository = typeof(IUniversalDataService<>);
-                var implementation = typeof(UniversalDataService<,>);
+                var implementation = typeof(UniversalRepository<,>);
 
                 var universalRepositoryGeneric = universalRepository.MakeGenericType(domainType);
                 var implementationGeneric = implementation.MakeGenericType(domainType, dtoType);
 
                 var serviceConstructorParams = new object[]
                 {
-                    _memoryCache,
-                    connectionConfig
+                    isCachingEnabled,
+                    memoryCacheOptions ?? new MemoryCacheOptions(),
+                    connectionConfig,
                 };
 
                 object serviceImplementationFactoryFunc
@@ -81,13 +72,23 @@
                                                   Assembly dataTransferObjectsContainerAssembly,
                                                   string connectionString,
                                                   IEnumerable<Profile> mappingProfilesList = null,
-                                                  bool isTransientScoped = false)
+                                                  bool isTransientScoped = false,
+                                                  bool isCachingEnabled = false,
+                                                  IOptions<MemoryCacheOptions> memoryCacheOptions = null)
         {
             serviceCollection.AddUniversalRepository(dataTransferObjectsContainerAssembly,
                                                      new ConnectionConfig(connectionString),
                                                      mappingProfilesList,
-                                                     isTransientScoped);
+                                                     isTransientScoped,
+                                                     isCachingEnabled,
+                                                     memoryCacheOptions);
         }
+
+        public static void ChangeUniversalRepositoryConnection(this Assembly assembly, string connectionString, bool invalidateCache = true)
+            => assembly.ChangeUniversalRepositoryConnection(new ConnectionConfig(connectionString), invalidateCache);
+
+        public static void ChangeUniversalRepositoryConnection(this Assembly assembly, ConnectionConfig connectionConfig, bool invalidateCache = true)
+            => UniversalRepositoryCachedBase.ChangeConnection(connectionConfig, invalidateCache);
 
         #endregion
 

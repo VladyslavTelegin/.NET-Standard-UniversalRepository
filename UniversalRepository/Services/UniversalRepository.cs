@@ -5,7 +5,7 @@
     using Dapper.Contrib.Extensions;
 
     using Microsoft.Extensions.Caching.Memory;
-
+    using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -18,15 +18,17 @@
     using UniversalRepository.Models;
     using UniversalRepository.ServiceDefinitions;
 
-    public class UniversalDataService<TDomain, TDto> : RepositoryCachedBase, IUniversalDataService<TDomain>
+    public class UniversalRepository<TDomain, TDto> : UniversalRepositoryCachedBase, IUniversalDataService<TDomain>
        where TDomain : class, IUniversalDomainObject
        where TDto : class, IUniversalDataTransferObject<TDomain>
     {
         #region Constuctor
 
-        public UniversalDataService(IMemoryCache memoryCache,
-                                    ConnectionConfig connectionConfig)  
-            : base(memoryCache,
+        public UniversalRepository(bool isCachingEnabled, 
+                                   IOptions<MemoryCacheOptions> memoryCacheOptions,
+                                   ConnectionConfig connectionConfig)  
+            : base(isCachingEnabled, 
+                   memoryCacheOptions,
                    connectionConfig, 
                    typeof(TDomain).FullName) { }
 
@@ -49,7 +51,7 @@
                     var affectedRows = await dbContext.InsertAsync(mappedDto);
                     if (affectedRows > 0)
                     {
-                        base.Cache.Remove(base.CacheKey);
+                        Cache.Remove(base.CacheKey);
                         return UniversalRepositoryResult.Success();
                     }
                     else
@@ -61,7 +63,7 @@
             }
             catch (Exception ex)
             {
-                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalDataService<TDomain, TDto>)}.{nameof(this.CreateAsync)} -> {ex.Message};";
+                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.CreateAsync)} -> {ex.Message};";
 
                 Logger.Instance.CreateLog(logMessage);
 
@@ -90,7 +92,7 @@
             }
             catch (Exception ex)
             {
-                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalDataService<TDomain, TDto>)}.{nameof(this.GetAsync)} -> {ex.Message};";
+                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.GetAsync)} -> {ex.Message};";
 
                 Logger.Instance.CreateLog(logMessage);
 
@@ -100,11 +102,11 @@
 
         public async Task<UniversalRepositoryResult<IEnumerable<TDomain>>> GetAllAsync()
         {
-            IEnumerable<TDomain> cachedResult = null;
+            IEnumerable<TDomain> result = null;
 
             try
             {
-                if (!base.Cache.TryGetValue(base.CacheKey, out cachedResult))
+                if (!Cache.TryGetValue(base.CacheKey, out result))
                 {
                     using (IDbConnection dbContext = base.Connection)
                     {
@@ -112,7 +114,15 @@
                         if (allItems != null)
                         {
                             var mappedDomainObjects = Mapper.Map<IEnumerable<TDomain>>(allItems);
-                            base.Cache.Set(base.CacheKey, mappedDomainObjects);
+
+                            if (Cache.IsEnabled)
+                            {
+                                Cache.Set(base.CacheKey, mappedDomainObjects);
+                            }
+                            else
+                            {
+                                result = mappedDomainObjects;
+                            }
                         }
                         else
                         {
@@ -124,16 +134,16 @@
             }
             catch (Exception ex)
             {
-                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalDataService<TDomain, TDto>)}.{nameof(this.GetAllAsync)} -> {ex.Message};";
+                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.GetAllAsync)} -> {ex.Message};";
 
                 Logger.Instance.CreateLog(logMessage);
 
                 return UniversalRepositoryResult<IEnumerable<TDomain>>.Fail(ex);
             }
 
-            cachedResult = base.Cache.Get<IEnumerable<TDomain>>(base.CacheKey);
+            result = Cache.IsEnabled ? Cache.Get<IEnumerable<TDomain>>(base.CacheKey) : result;
 
-            return UniversalRepositoryResult<IEnumerable<TDomain>>.Success(cachedResult);
+            return UniversalRepositoryResult<IEnumerable<TDomain>>.Success(result);
         }
 
         public async Task<UniversalRepositoryResult> UpdateAsync(TDomain modelToUpdate)
@@ -147,7 +157,7 @@
                     var userUpdatingResult = await dbContext.UpdateAsync(dataTransferObject);
                     if (userUpdatingResult)
                     {
-                        base.Cache.Remove(base.CacheKey);
+                        Cache.Remove(base.CacheKey);
                         return UniversalRepositoryResult.Success();
                     }
                     else
@@ -159,7 +169,7 @@
             }
             catch (Exception ex)
             {
-                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalDataService<TDomain, TDto>)}.{nameof(this.UpdateAsync)} -> {ex.Message};";
+                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.UpdateAsync)} -> {ex.Message};";
 
                 Logger.Instance.CreateLog(logMessage);
 
@@ -181,7 +191,7 @@
                         var deletionResult = await dbContext.DeleteAsync(dataTransferObject);
                         if (deletionResult)
                         {
-                            base.Cache.Remove(base.CacheKey);
+                            Cache.Remove(base.CacheKey);
                             return UniversalRepositoryResult.Success();
                         }
                         else
@@ -198,7 +208,7 @@
             }
             catch (Exception ex)
             {
-                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalDataService<TDomain, TDto>)}.{nameof(this.CreateAsync)} -> {ex.Message};";
+                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.CreateAsync)} -> {ex.Message};";
 
                 Logger.Instance.CreateLog(logMessage);
 
@@ -249,11 +259,7 @@
 
         #region Synchronus
 
-        #region Synchronus
-
         public UniversalRepositoryResult<IEnumerable<TDomain>> GetAll(string customQuery) => this.GetAllAsync(customQuery).Result;
-
-        #endregion
 
         #endregion
 

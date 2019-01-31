@@ -1,4 +1,4 @@
-﻿namespace UniversalRepository.Extensions
+﻿namespace UniversalRepository.CoreExtensions
 {
     using System;
     using System.Collections.Generic;
