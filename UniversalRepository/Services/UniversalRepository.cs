@@ -19,8 +19,8 @@
     using UniversalRepository.Models;
     using UniversalRepository.ServiceDefinitions;
 
-    public class UniversalRepository<TDomain, TDto> : UniversalRepositoryCachedBase, IUniversalDataService<TDomain>
-       where TDomain : class, IUniversalDomainObject
+    public class UniversalRepository<TDomain, TDto> : UniversalRepositoryCachedBase, IUniversalRepository<TDomain>
+       where TDomain : class, IUniversalDomainObject 
        where TDto : class, IUniversalDataTransferObject<TDomain>
     {
         #region Constuctor
@@ -109,7 +109,7 @@
             {
                 if (!Cache.TryGetValue(base.CacheKey, out result))
                 {
-                    using (IDbConnection dbContext = base.Connection)
+                    using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                     {
                         var allItems = await dbContext.GetAllAsync<TDto>().ConfigureAwait(false);
                         if (allItems != null)
@@ -151,7 +151,7 @@
         {
             try
             {
-                using (IDbConnection dbContext = base.Connection)
+                using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
                     var dataTransferObject = Mapper.Map<TDto>(modelToUpdate);
 
@@ -163,7 +163,7 @@
                     }
                     else
                     {
-                        var errorMessage = $"Cannot get update row.";
+                        var errorMessage = $"Cannot update row.";
                         throw new UniversalRepositoryException(errorMessage);
                     }
                 }
@@ -182,7 +182,7 @@
         {
             try
             {
-                using (IDbConnection dbContext = base.Connection)
+                using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
                     var itemEntry = await this.GetAsync(id);
                     if (itemEntry.IsSuccess)

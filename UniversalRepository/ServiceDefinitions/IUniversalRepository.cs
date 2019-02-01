@@ -5,7 +5,7 @@
 
     using UniversalRepository.Models;
 
-    public interface IUniversalDataService<TDomain>
+    public interface IUniversalRepository<TDomain>
     {
         #region Default CRUD
         

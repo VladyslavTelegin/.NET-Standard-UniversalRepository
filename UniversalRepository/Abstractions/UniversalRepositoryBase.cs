@@ -36,7 +36,7 @@
                 var connectionAttribute = connectionAttributeObject as DapperConnectionAttribute;
                 if (!(connectionAttribute == null || string.IsNullOrEmpty(connectionAttribute.ConnectionString)))
                 {
-                    ConnectionConfig = new ConnectionConfig(connectionAttribute.ConnectionString);
+                    this.ConnectionConfig = new ConnectionConfig(connectionAttribute.ConnectionString);
                 }
             }
 

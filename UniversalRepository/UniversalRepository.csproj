@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>.NET Standard MemoryCache-Supportable universal generic repository based on Dapper® ORM and AutoMapper®.</Description>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>Vladyslav Telegin</Authors>
     <Company>GenieSoftware</Company>
     <PackageLicenseUrl>https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository</PackageLicenseUrl>

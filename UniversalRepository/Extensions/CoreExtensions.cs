@@ -32,14 +32,14 @@
 
             var dtoInterfaceType = typeof(IUniversalDataTransferObject<>);
 
-            var dtos = dataTransferObjectsContainerAssembly.GetImplementations(dtoInterfaceType);
+            var dtoImplementationTypes = dataTransferObjectsContainerAssembly.GetImplementations(dtoInterfaceType);
 
-            foreach (var dtoType in dtos)
+            foreach (var dtoType in dtoImplementationTypes)
             {
                 var domainType = dtoType.GetInterfaces().First(_ => _.IsGenericType && _.GetGenericTypeDefinition() == dtoInterfaceType)
                                                         .GetGenericArguments()[0];
 
-                var universalRepository = typeof(IUniversalDataService<>);
+                var universalRepository = typeof(IUniversalRepository<>);
                 var implementation = typeof(UniversalRepository<,>);
 
                 var universalRepositoryGeneric = universalRepository.MakeGenericType(domainType);
@@ -88,7 +88,8 @@
 
         private static void AddAutoMapper(IEnumerable<Profile> mappingProfilesList)
         {
-            Mapper.Initialize(_ => mappingProfilesList?.ToList().ForEach(__ => _.AddProfile(__)));
+            Mapper.Initialize(_ => mappingProfilesList?.ToList()
+                                                      ?.ForEach(__ => _.AddProfile(__)));
 
             Mapper.Configuration.AssertConfigurationIsValid();
         }
