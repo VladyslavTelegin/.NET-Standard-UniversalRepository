@@ -11,7 +11,6 @@
     using System.Linq;
     using System.Reflection;
 
-    using UniversalRepository.Abstractions;
     using UniversalRepository.Interfaces;
     using UniversalRepository.Models;
     using UniversalRepository.ServiceDefinitions;
@@ -19,7 +18,6 @@
 
     public static class CoreExtensions
     {
-  
         #region PublicMethods
 
         public static void AddUniversalRepository(this IServiceCollection serviceCollection,
@@ -83,12 +81,6 @@
                                                      isCachingEnabled,
                                                      memoryCacheOptions);
         }
-
-        public static void ChangeUniversalRepositoryConnection(this Assembly assembly, string connectionString, bool invalidateCache = true)
-            => assembly.ChangeUniversalRepositoryConnection(new ConnectionConfig(connectionString), invalidateCache);
-
-        public static void ChangeUniversalRepositoryConnection(this Assembly assembly, ConnectionConfig connectionConfig, bool invalidateCache = true)
-            => UniversalRepositoryCachedBase.ChangeConnection(connectionConfig, invalidateCache);
 
         #endregion
 

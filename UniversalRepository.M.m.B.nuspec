@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>UniversalRepository</id>
+    <version>M.m.B</version>
+    <authors>Vladyslav Telegin</authors>
+    <owners>Vladyslav Telegin</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository</licenseUrl>
+    <projectUrl>https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/VladyslavTelegin/.NET-Standard-UniversalRepository/master/icon.png</iconUrl>
+    <description>.NET Standard MemoryCache-Supportable universal generic repository based on Dapper® ORM and AutoMapper®.</description>
+    <tags>.NET Standard C# Core Universal Repository Generic AutoMapper Dapper</tags>
+    <repository type="Git" url="https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="AutoMapper" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="Dapper" version="1.50.5" exclude="Build,Analyzers" />
+        <dependency id="Dapper.Contrib" version="1.50.5" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="2.0.0" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="12.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Projects\Trunk\UniversalRepository\UniversalRepository\bin\Release\netstandard2.0\UniversalRepository.dll" target="lib\netstandard2.0\UniversalRepository.dll" />
+  </files>
+</package>

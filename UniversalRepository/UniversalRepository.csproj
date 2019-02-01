@@ -2,11 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>.NET Standard MemoryCache-Supportable universal generic repository based on Dapper® ORM and AutoMapper®.</Description>
+    <Version>1.0.4</Version>
+    <Authors>Vladyslav Telegin</Authors>
+    <Company>GenieSoftware</Company>
+    <PackageLicenseUrl>https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/VladyslavTelegin/.NET-Standard-UniversalRepository/master/icon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/VladyslavTelegin/.NET-Standard-UniversalRepository</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <NeutralLanguage>English (United States)</NeutralLanguage>
+    <PackageTags>.NET Standard C# Core Universal Repository Generic AutoMapper Dapper</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />

@@ -38,23 +38,5 @@
         protected string CacheKey => $"{this.GetType().Name}_{_currentGenericTypedCacheMixIn}_cache";
 
         #endregion
-
-        #region PublicMethods
-
-        public static void ChangeConnection(string connectionString, bool invalidateCache = true)
-            => ChangeConnection(new ConnectionConfig(connectionString), invalidateCache);
-
-        public static void ChangeConnection(ConnectionConfig connectionConfig, bool invalidateCache = true)
-        {
-            ConnectionConfig = connectionConfig;
-
-            if (invalidateCache)
-            {
-                Cache.Dispose();
-                Cache = new MemoryCacheWrapper(new MemoryCacheOptions());
-            }
-        }
-
-        #endregion
     }
 }

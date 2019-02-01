@@ -45,7 +45,7 @@
         {
             try
             {
-                using (IDbConnection dbContext = base.Connection)
+                using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
                     var mappedDto = Mapper.Map<TDto>(modelToCreate);
 
@@ -76,7 +76,7 @@
         {
             try
             {
-                using (IDbConnection dbContext = base.Connection)
+                using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
                     var allItems = await dbContext.GetAsync<TDto>(id);
                     if (allItems != null)
