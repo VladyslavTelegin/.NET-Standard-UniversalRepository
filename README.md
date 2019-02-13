@@ -20,7 +20,7 @@ public class SampleDto : IUniversalDataTransferObject<SampleDomain>
 
 ```
 
-### Step 2. Add UniversalRepository to your project like Middleware extension.
+### Step 2. Add UniversalRepository to your project like extension.
 
 ``` C#
 
@@ -51,6 +51,19 @@ public void ConfigureServices(IServiceCollection services)
                           "User=JohnDoe;Password=JohnDoe2019#;Persist Security Info=False;"
     );
 }
+```
+
+#### Full method's signature:
+
+``` C#
+public static void AddUniversalRepository(this IServiceCollection serviceCollection,
+                                          Assembly dataTransferObjectsContainerAssembly,
+                                          string connectionString,
+                                          IEnumerable<Profile> mappingProfilesList = null,
+                                          bool isTransientScoped = false,
+                                          bool isCachingEnabled = false,
+                                          IOptions<MemoryCacheOptions> memoryCacheOptions = null)
+
 ```
 
 ### Step 3. Resolve required repository and use it.
