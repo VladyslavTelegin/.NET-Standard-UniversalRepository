@@ -73,9 +73,9 @@ public static void AddUniversalRepository(this IServiceCollection serviceCollect
 
 public class SamplesController : Controller
 {
-    private readonly IUniversalDataService<SampleDomain> _samplesRepository;
+    private readonly IUniversalRepository<SampleDomain> _samplesRepository;
 
-    public SamplesController(IUniversalDataService<SampleDomain> samplesRepository)
+    public SamplesController(IUniversalRepository<SampleDomain> samplesRepository)
     {
         _samplesRepository = samplesRepository;
     }
