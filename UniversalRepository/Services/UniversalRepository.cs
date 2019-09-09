@@ -23,7 +23,7 @@
        where TDomain : class, IUniversalDomainObject 
        where TDto : class, IUniversalDataTransferObject<TDomain>
     {
-        #region Constuctor
+        #region Constructor
 
         public UniversalRepository(bool isCachingEnabled, 
                                    IOptions<MemoryCacheOptions> memoryCacheOptions,
@@ -49,8 +49,8 @@
                 {
                     var mappedDto = Mapper.Map<TDto>(modelToCreate);
 
-                    var affectedRows = await dbContext.InsertAsync(mappedDto);
-                    if (affectedRows > 0)
+                    var entityIdentifier = await dbContext.InsertAsync(mappedDto);
+                    if (entityIdentifier != default)
                     {
                         Cache.Remove(base.CacheKey);
                         return UniversalRepositoryResult.Success();

@@ -22,15 +22,28 @@
 
         public static void AddUniversalRepository(this IServiceCollection serviceCollection,
                                                   Assembly dataTransferObjectsContainerAssembly,
-                                                  ConnectionConfig connectionConfig, 
+                                                  ConnectionConfig connectionConfig = null, 
                                                   IEnumerable<Profile> mappingProfilesList = null,
-                                                  bool isTransientScoped = false,
-                                                  bool isCachingEnabled = false,
+                                                  bool isTransientScoped = true,
+                                                  bool isCachingEnabled = true,
                                                   IOptions<MemoryCacheOptions> memoryCacheOptions = null)
         {
             AddAutoMapper(mappingProfilesList);
 
             var dtoInterfaceType = typeof(IUniversalDataTransferObject<>);
+
+            if (dataTransferObjectsContainerAssembly == null)
+            {
+                var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                var resolvedAssembly = domainAssemblies.SingleOrDefault(assembly => assembly.GetName().Name == "Program");
+                if (resolvedAssembly == default)
+                {
+                    resolvedAssembly = domainAssemblies.SingleOrDefault(assembly => assembly.GetName().Name == "Startup");
+                }
+
+                dataTransferObjectsContainerAssembly = resolvedAssembly;
+            }
 
             var dtoImplementationTypes = dataTransferObjectsContainerAssembly.GetImplementations(dtoInterfaceType);
 
@@ -67,11 +80,11 @@
         }
 
         public static void AddUniversalRepository(this IServiceCollection serviceCollection,
-                                                  Assembly dataTransferObjectsContainerAssembly,
-                                                  string connectionString,
+                                                  Assembly dataTransferObjectsContainerAssembly = null,
+                                                  string connectionString = null,
                                                   IEnumerable<Profile> mappingProfilesList = null,
-                                                  bool isTransientScoped = false,
-                                                  bool isCachingEnabled = false,
+                                                  bool isTransientScoped = true,
+                                                  bool isCachingEnabled = true,
                                                   IOptions<MemoryCacheOptions> memoryCacheOptions = null)
         {
             serviceCollection.AddUniversalRepository(dataTransferObjectsContainerAssembly,

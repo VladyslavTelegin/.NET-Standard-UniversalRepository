@@ -36,9 +36,7 @@
             get
             {
                 if (!string.IsNullOrEmpty(_connectionString))
-                {
                     return _connectionString;
-                }
 
                 return $"Data Source={this.DataSource};Initial Catalog={this.InitialCatalog};" +
                        $"Integrated Security={this.IntegratedSecurity.ToString()};User{this.User};Password={this.Password};" +
