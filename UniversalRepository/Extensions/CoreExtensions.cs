@@ -24,7 +24,7 @@
                                                   Assembly dataTransferObjectsContainerAssembly,
                                                   ConnectionConfig connectionConfig = null, 
                                                   IEnumerable<Profile> mappingProfilesList = null,
-                                                  bool isTransientScoped = true,
+                                                  bool isTransientScoped = false,
                                                   bool isCachingEnabled = true,
                                                   IOptions<MemoryCacheOptions> memoryCacheOptions = null)
         {
@@ -36,13 +36,17 @@
             {
                 var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-                var resolvedAssembly = domainAssemblies.SingleOrDefault(assembly => assembly.GetName().Name == "Program");
-                if (resolvedAssembly == default)
+                foreach (var assembly in domainAssemblies)
                 {
-                    resolvedAssembly = domainAssemblies.SingleOrDefault(assembly => assembly.GetName().Name == "Startup");
-                }
+                    var types = assembly.GetTypes();
 
-                dataTransferObjectsContainerAssembly = resolvedAssembly;
+                    var entryClass = types.FirstOrDefault(_ => (_.Name == "Program" || _.Name == "Startup") && _.IsClass);
+                    if (entryClass != default)
+                    {
+                        dataTransferObjectsContainerAssembly = assembly;
+                        break;
+                    }
+                }
             }
 
             var dtoImplementationTypes = dataTransferObjectsContainerAssembly.GetImplementations(dtoInterfaceType);
@@ -83,7 +87,7 @@
                                                   Assembly dataTransferObjectsContainerAssembly = null,
                                                   string connectionString = null,
                                                   IEnumerable<Profile> mappingProfilesList = null,
-                                                  bool isTransientScoped = true,
+                                                  bool isTransientScoped = false,
                                                   bool isCachingEnabled = true,
                                                   IOptions<MemoryCacheOptions> memoryCacheOptions = null)
         {

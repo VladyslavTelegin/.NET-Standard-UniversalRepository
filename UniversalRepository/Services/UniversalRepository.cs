@@ -41,19 +41,18 @@
 
         #region Asynchronus
 
-        public async Task<UniversalRepositoryResult> CreateAsync(TDomain modelToCreate)
+        public async Task CreateAsync(TDomain item)
         {
             try
             {
                 using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
-                    var mappedDto = Mapper.Map<TDto>(modelToCreate);
+                    var mappedDto = Mapper.Map<TDto>(item);
 
                     var entityIdentifier = await dbContext.InsertAsync(mappedDto);
                     if (entityIdentifier != default)
                     {
                         Cache.Remove(base.CacheKey);
-                        return UniversalRepositoryResult.Success();
                     }
                     else
                     {
@@ -65,14 +64,12 @@
             catch (Exception ex)
             {
                 var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.CreateAsync)} -> {ex.Message};";
-
                 Logger.Instance.CreateLog(logMessage);
-
-                return UniversalRepositoryResult.Fail(ex);
+                throw;
             }
         }
 
-        public async Task<UniversalRepositoryResult<TDomain>> GetAsync(int id)
+        public async Task<TDomain> GetAsync(int id)
         {
             try
             {
@@ -82,7 +79,7 @@
                     if (allItems != null)
                     {
                         var mappedDomainObject = Mapper.Map<TDomain>(allItems);
-                        return UniversalRepositoryResult<TDomain>.Success(mappedDomainObject);
+                        return mappedDomainObject;
                     }
                     else
                     {
@@ -94,14 +91,13 @@
             catch (Exception ex)
             {
                 var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.GetAsync)} -> {ex.Message};";
-
                 Logger.Instance.CreateLog(logMessage);
 
-                return UniversalRepositoryResult<TDomain>.Fail(ex);
+                return default;
             }
         }
 
-        public async Task<UniversalRepositoryResult<IEnumerable<TDomain>>> GetAllAsync()
+        public async Task<IEnumerable<TDomain>> GetAllAsync()
         {
             IEnumerable<TDomain> result = null;
 
@@ -136,30 +132,27 @@
             catch (Exception ex)
             {
                 var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.GetAllAsync)} -> {ex.Message};";
-
                 Logger.Instance.CreateLog(logMessage);
 
-                return UniversalRepositoryResult<IEnumerable<TDomain>>.Fail(ex);
+                throw;
             }
 
             result = Cache.IsEnabled ? Cache.Get<IEnumerable<TDomain>>(base.CacheKey) : result;
-
-            return UniversalRepositoryResult<IEnumerable<TDomain>>.Success(result);
+            return result;
         }
 
-        public async Task<UniversalRepositoryResult> UpdateAsync(TDomain modelToUpdate)
+        public async Task UpdateAsync(TDomain item)
         {
             try
             {
                 using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
-                    var dataTransferObject = Mapper.Map<TDto>(modelToUpdate);
+                    var dataTransferObject = Mapper.Map<TDto>(item);
 
                     var userUpdatingResult = await dbContext.UpdateAsync(dataTransferObject);
                     if (userUpdatingResult)
                     {
                         Cache.Remove(base.CacheKey);
-                        return UniversalRepositoryResult.Success();
                     }
                     else
                     {
@@ -171,29 +164,27 @@
             catch (Exception ex)
             {
                 var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.UpdateAsync)} -> {ex.Message};";
-
                 Logger.Instance.CreateLog(logMessage);
 
-                return UniversalRepositoryResult.Fail(ex);
+                throw;
             }
         }
 
-        public async Task<UniversalRepositoryResult> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             try
             {
                 using (IDbConnection dbContext = base.ResolveConnection<TDto>())
                 {
                     var itemEntry = await this.GetAsync(id);
-                    if (itemEntry.IsSuccess)
+                    if (itemEntry == default)
                     {
-                        var dataTransferObject = Mapper.Map<TDto>(itemEntry.Result);
+                        var dataTransferObject = Mapper.Map<TDto>(itemEntry);
 
                         var deletionResult = await dbContext.DeleteAsync(dataTransferObject);
                         if (deletionResult)
                         {
                             Cache.Remove(base.CacheKey);
-                            return UniversalRepositoryResult.Success();
                         }
                         else
                         {
@@ -203,64 +194,19 @@
                     }
                     else
                     {
-                        throw new UniversalRepositoryException(itemEntry.ErrorMessage);
+                        var errorMessage = $"Cannot get row for deletion.";
+                        throw new UniversalRepositoryException(errorMessage);
                     }
                 }
             }
             catch (Exception ex)
             {
-                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.CreateAsync)} -> {ex.Message};";
-
+                var logMessage = $"{DateTime.UtcNow}: {nameof(UniversalRepository<TDomain, TDto>)}.{nameof(this.DeleteAsync)} -> {ex.Message};";
                 Logger.Instance.CreateLog(logMessage);
 
-                return UniversalRepositoryResult.Fail(ex);
+                throw;
             }
         }
-
-        #endregion
-
-        #region Synchronus
-
-        public UniversalRepositoryResult<IEnumerable<TDomain>> GetAll() => this.GetAllAsync().Result;
-
-        #endregion
-
-        #endregion
-
-        #region Customizable CRUD
-
-        #region Asynchronus
-
-        public Task<UniversalRepositoryResult> CreateAsync(string customQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UniversalRepositoryResult<TDomain>> GetAsync(string customQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UniversalRepositoryResult<IEnumerable<TDomain>>> GetAllAsync(string customQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UniversalRepositoryResult> UpdateAsync(string customQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UniversalRepositoryResult> DeleteAsync(string customQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Synchronus
-
-        public UniversalRepositoryResult<IEnumerable<TDomain>> GetAll(string customQuery) => this.GetAllAsync(customQuery).Result;
 
         #endregion
 
